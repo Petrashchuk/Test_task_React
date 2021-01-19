@@ -1,0 +1,1 @@
+export const urlPeopleByPage = 'http://swapi.dev/api/people/?page=';
