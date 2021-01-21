@@ -1,19 +1,49 @@
 import React, { useEffect, useState } from 'react'
 import { TableContainer } from '../TableContainer/TableContainer'
 import InformationModal from '../InformationModal/InformationModal'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
+import { setPeopleBirthYear } from '../../store/people/action';
 
-export function Main ({ peopleList, films, species, spaceships, currentPage }) {
+export function Main ({
+                        peopleList,
+                        films,
+                        species,
+                        spaceships,
+                        currentPage,
+                        filterByFilm,
+                        filterBySpecie,
+                        rangeData
+                      }) {
   const [modalState, setModalState] = useState(false);
-  const [currentPeopleList, setCurrentPeopleList] = useState([]);
   const [person, setPerson] = useState(null);
   const [personFilms, setPersonFilms] = useState([]);
   const [personSpecies, setPersonSpecies] = useState([]);
   const [personSpaceships, setPersonSpaceships] = useState([]);
+  const [currentPeopleList, setCurrentPeopleList] = useState([])
+  const dispatch = useDispatch();
+  const onFilter = (currentList) => {
+    if (filterBySpecie.selected) {
+      currentList = currentList.filter(person => person[ 'species' ].includes(filterBySpecie.specieId));
+    }
+    if (filterByFilm.selected) {
+      currentList = currentList.filter(person => person[ 'films' ].includes(filterByFilm.filmId));
+    }
+    return currentList.filter(person => (parseFloat(person.birth_year) >= rangeData.currentRange || person.birth_year === 'unknown'))
+  }
 
   useEffect(() => {
     if (peopleList.length) {
-      setCurrentPeopleList(peopleList[ currentPage - 1 ])
+      const currentList = [...peopleList[ currentPage - 1 ]];
+      setCurrentPeopleList(onFilter(currentList));
+    }
+  }, [rangeData, currentPage, peopleList, filterByFilm, filterBySpecie]);
+
+  useEffect(() => {
+    if (peopleList.length) {
+      const correctBirthYears = [...peopleList[ currentPage - 1 ]]
+      .filter(p => !(p.birth_year.includes('unknown')))
+      .map(p => p.birth_year);
+      dispatch(setPeopleBirthYear(correctBirthYears))
     }
   }, [currentPage, peopleList])
 
@@ -27,9 +57,9 @@ export function Main ({ peopleList, films, species, spaceships, currentPage }) {
     setPerson(item)
     setModalState(true);
   }
-  const handleClose = () => {
-    setModalState((prevState => !prevState));
-  }
+
+  const handleClose = () => setModalState((prevState => !prevState));
+
   return (
     <div>
       {currentPeopleList.length && <>
@@ -54,9 +84,23 @@ function mapStateToProps ({
                             filmsReducer: { films },
                             speciesReducer: { species },
                             spaceshipsReducer: { spaceships },
-                            pagesReducer: { currentPage }
+                            pagesReducer: { currentPage },
+                            filtersReducer: {
+                              filterByFilm,
+                              filterBySpecie,
+                              rangeData
+                            }
                           }) {
-  return { peopleList, films, species, spaceships, currentPage }
+  return {
+    peopleList,
+    films,
+    species,
+    spaceships,
+    currentPage,
+    filterByFilm,
+    filterBySpecie,
+    rangeData
+  }
 }
 
 export default connect(mapStateToProps, null)(Main)

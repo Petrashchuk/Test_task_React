@@ -1,32 +1,51 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 import { Select } from '../SelectContainer'
 import RangeSlider from 'react-bootstrap-range-slider'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
+import {
+  setFilterByFilm,
+  setFilterBySpecie,
+  setRangeYearData
+} from '../../store/filters/action'
 
+function Header ({ films, species, birthYears, rangeData }) {
+  const dispatch = useDispatch();
+  const maxYear = useMemo(() => birthYears.length ? Math.max(...birthYears.map(year => parseFloat(year))) : 0, [birthYears]);
+  const minYear = useMemo(() => birthYears.length ? Math.min(...birthYears.map(year => parseFloat(year))) : 0, [birthYears]);
 
-function Header({films, species, peopleList, currentPage}){
-
-  // const handleFilter=useCallback((id,key)=>{
-  //   const currentList = peopleList[ pageNumber - 1 ];
-  //   if (id === 'None') {
-  //     setCurrentPeopleList(currentList)
-  //     // setDataForFilter(prevState => ({...prevState,isSelectedFilterByFilm:false}))
-  //   } else {
-  //     const updatedPeopleList = currentList.filter(person => person[`${key}`].includes(id));
-  //     setCurrentPeopleList(updatedPeopleList);
-  //     // setDataForFilter(prevState => ({...prevState,isSelectedFilterByFilm:true}))
-  //   }
-  // },[])
-
+  useEffect(() => {
+    dispatch(setRangeYearData({
+      minYear: minYear,
+      maxYear: maxYear,
+      currentRange: minYear
+    }))
+  }, [birthYears])
 
   const onSelectFilm = (event) => {
-    // handleFilter(event.target.value,'films');
+    const filmId = event.target.value;
+    if (filmId !== 'None') {
+      dispatch(setFilterByFilm({ selected: true, filmId }))
+    } else {
+      dispatch(setFilterByFilm({ selected: false, filmId: 'None' }))
+    }
   }
 
+  const onChange = useCallback((event) => {
+    const value = +event.target.value;
+    dispatch(setRangeYearData({
+      ...rangeData, currentRange: value
+    }))
+  }, [rangeData])
+
   const onSelectSpecies = (event) => {
-    // handleFilter(event.target.value,'species');
+    const specieId = event.target.value;
+    if (specieId !== 'None') {
+      dispatch(setFilterBySpecie({ selected: true, specieId }))
+    } else {
+      dispatch(setFilterBySpecie({ selected: false, specieId: 'None' }))
+    }
   }
-  return(
+  return (
     <div className={'wrapper'}>
       <Select onChange={onSelectFilm}
               labelText={'Filter by Film:'}>
@@ -49,23 +68,36 @@ function Header({films, species, peopleList, currentPage}){
       <div>
         <p>Filter by Birth Year:</p>
         <RangeSlider
+          disabled={!birthYears.length}
           className={'wrapper'}
-          value={'ABY'}
+          min={minYear}
+          max={maxYear}
+          value={rangeData.currentRange}
+          tooltipLabel={val => val + ' ' + 'BBY'}
           size={'lg'}
-          onChange={changeEvent => {
-          }}
+          onChange={onChange}
         />
       </div>
     </div>
   )
 }
 
-function mapStateToProps ({ peopleReducer: { peopleList },
+function mapStateToProps ({
+                            peopleReducer: { peopleList, birthYears },
                             filmsReducer: { films },
                             speciesReducer: { species },
-                            spaceshipsReducer: { spaceships }
+                            pagesReducer: { currentPage },
+                            filtersReducer: { rangeData }
+
                           }) {
-  return { peopleList, films, species, spaceships }
+  return {
+    birthYears,
+    peopleList,
+    films,
+    species,
+    currentPage,
+    rangeData
+  }
 }
 
 export default connect(mapStateToProps, null)(Header)

@@ -1,1 +1,2 @@
 export const SET_PEOPLE = 'SET_PEOPLE';
+export const SET_PEOPLE_BIRTH_YEAR = 'SET_PEOPLE_BIRTH_YEAR';
