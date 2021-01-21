@@ -1,2 +1,0 @@
-export const SET_PEOPLE = 'SET_PEOPLE'
-export const DELETE_MESSAGE = 'DELETE_MESSAGE'

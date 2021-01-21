@@ -1,5 +1,5 @@
 import './App.css';
-import RootContainer from './components/RootContainer';
+import RootContainer from './components/RootContainer/RootContainer';
 
 function App () {
   return (
