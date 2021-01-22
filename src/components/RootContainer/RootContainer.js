@@ -16,9 +16,10 @@ const onDragEnd = (result, favoriteList, setFavoritesList, currentPeopleList) =>
   if (!result.destination) return
   const { source, destination } = result
   const dragEl = currentPeopleList[ source.index ]
+  const copyEl={...dragEl};
   const copy = [...favoriteList]
-  if (!(copy.includes(dragEl))) {
-    copy.push(dragEl)
+  if (!(copy.find(el=>el.url===copyEl.url))) {
+    copy.push(copyEl)
     setFavoritesList(copy)
   }
 
