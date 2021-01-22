@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { Select } from '../SelectContainer'
+import { Select } from '../components/SelectContainer'
 import RangeSlider from 'react-bootstrap-range-slider'
 import { connect, useDispatch } from 'react-redux'
 import {
   setFilterByFilm,
   setFilterBySpecie,
   setRangeYearData
-} from '../../store/filters/action'
+} from '../store/filters/action'
 
 function Header ({ films, species, birthYears, rangeData }) {
   const dispatch = useDispatch();

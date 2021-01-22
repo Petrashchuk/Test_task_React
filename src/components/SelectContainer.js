@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form } from 'react-bootstrap'
 
-export function Select ({ films, onChange, labelText,children }) {
+export function Select ({onChange, labelText,children }) {
 
   return (
     <Form.Group>

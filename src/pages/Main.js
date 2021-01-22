@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { TableContainer } from '../TableContainer/TableContainer'
-import InformationModal from '../InformationModal/InformationModal'
+import { TableContainer } from '../components/TableContainer/TableContainer'
+import InformationModal from '../components/InformationModal/InformationModal'
 import { connect, useDispatch } from 'react-redux'
-import { setPeopleBirthYear } from '../../store/people/action';
+import { setPeopleBirthYear } from '../store/people/action';
 
 export function Main ({
                         peopleList,
@@ -36,7 +36,7 @@ export function Main ({
       const currentList = [...peopleList[ currentPage - 1 ]];
       setCurrentPeopleList(onFilter(currentList));
     }
-  }, [rangeData, currentPage, peopleList, filterByFilm, filterBySpecie]);
+  }, [rangeData, filterByFilm, filterBySpecie]);
 
   useEffect(() => {
     if (peopleList.length) {
