@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { TableContainer } from '../components/TableContainer/TableContainer'
 import InformationModal from '../components/InformationModal/InformationModal'
 import { connect, useDispatch } from 'react-redux'
-import { setPeopleBirthYear } from '../store/people/action';
+import { setPeopleBirthYear,setCurrentPeopleList } from '../store/people/action';
 
 export function Main ({
                         peopleList,
@@ -12,14 +12,14 @@ export function Main ({
                         currentPage,
                         filterByFilm,
                         filterBySpecie,
-                        rangeData
+                        rangeData,
+                        currentPeopleList
                       }) {
   const [modalState, setModalState] = useState(false);
   const [person, setPerson] = useState(null);
   const [personFilms, setPersonFilms] = useState([]);
   const [personSpecies, setPersonSpecies] = useState([]);
   const [personSpaceships, setPersonSpaceships] = useState([]);
-  const [currentPeopleList, setCurrentPeopleList] = useState([])
   const dispatch = useDispatch();
   const onFilter = (currentList) => {
     if (filterBySpecie.selected) {
@@ -34,7 +34,7 @@ export function Main ({
   useEffect(() => {
     if (peopleList.length) {
       const currentList = [...peopleList[ currentPage - 1 ]];
-      setCurrentPeopleList(onFilter(currentList));
+      dispatch(setCurrentPeopleList(onFilter(currentList)));
     }
   }, [rangeData, filterByFilm, filterBySpecie]);
 
@@ -80,7 +80,7 @@ export function Main ({
 }
 
 function mapStateToProps ({
-                            peopleReducer: { peopleList },
+                            peopleReducer: { peopleList,currentPeopleList },
                             filmsReducer: { films },
                             speciesReducer: { species },
                             spaceshipsReducer: { spaceships },
@@ -99,7 +99,8 @@ function mapStateToProps ({
     currentPage,
     filterByFilm,
     filterBySpecie,
-    rangeData
+    rangeData,
+    currentPeopleList
   }
 }
 

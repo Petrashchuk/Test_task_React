@@ -1,4 +1,4 @@
-import { SET_PEOPLE, SET_PEOPLE_BIRTH_YEAR } from './actionType';
+import { SET_PEOPLE, SET_PEOPLE_BIRTH_YEAR,SET_CURRENT_PEOPLE_LIST } from './actionType';
 import { urlPeopleByPage } from '../../constants'
 
 export const fetchPeople = () => dispatch => {
@@ -22,4 +22,7 @@ function fetchPeopleSuccess (peopleList) {
 
 export function setPeopleBirthYear (birthYears) {
   return { type: SET_PEOPLE_BIRTH_YEAR, birthYears }
+}
+export function setCurrentPeopleList (currentPeopleList) {
+  return { type: SET_CURRENT_PEOPLE_LIST, currentPeopleList }
 }

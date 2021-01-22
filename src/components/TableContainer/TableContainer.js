@@ -1,6 +1,7 @@
-import React from 'react';
+import React from 'react'
 import { Table } from 'react-bootstrap'
-import './TableContainer.css';
+import './TableContainer.css'
+import { Draggable } from 'react-beautiful-dnd'
 
 export const TableContainer = ({ peopleList, handleCharacter }) => {
   return (
@@ -14,11 +15,24 @@ export const TableContainer = ({ peopleList, handleCharacter }) => {
       <tbody>
       {peopleList.map((item, index) => {
         return (
-          <tr className={'listRow'} key={item.url}
-              onClick={() => handleCharacter(item)}>
-            <td>{index + 1}</td>
-            <td>{item.name}</td>
-          </tr>
+          <Draggable
+            key={item.url}
+            draggableId={item.url}
+            index={index}
+          >
+            {(provided, snapshot) => {
+              return (
+                <tr ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps} className={'listRow'}
+                    key={item.url}
+                    onClick={() => handleCharacter(item)}>
+                  <td>{index + 1}</td>
+                  <td>{item.name}</td>
+                </tr>
+              )
+            }}
+          </Draggable>
         )
       })}
       </tbody>
