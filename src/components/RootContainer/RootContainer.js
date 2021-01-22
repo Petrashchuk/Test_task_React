@@ -9,26 +9,14 @@ import Header from '../../pages/Header'
 import { Footer } from '../../pages/Footer'
 import Main from '../../pages/Main'
 import { Spinner } from '../Spinner'
-import { DragDropContext, Droppable } from "react-beautiful-dnd"
-import { TableContainer } from '../TableContainer/TableContainer'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { BoxTarget } from '../BoxTarget';
 
-const onDragEnd = (result, favoriteList, setFavoritesList, currentPeopleList) => {
-  if (!result.destination) return
-  const { source, destination } = result
-  const dragEl = currentPeopleList[ source.index ]
-  const copyEl={...dragEl};
-  const copy = [...favoriteList]
-  if (!(copy.find(el=>el.url===copyEl.url))) {
-    copy.push(copyEl)
-    setFavoritesList(copy)
-  }
 
-}
-
-function RootContainer ({ peopleList, currentPeopleList }) {
+function RootContainer ({ peopleList }) {
   const dispatch = useDispatch()
   const [spinnerStatus, setSpinnerStatus] = useState(true)
-  const [favoritesList, setFavoritesList] = useState([])
   useEffect(() => {
     dispatch(fetchPeople())
     dispatch(fetchFilms())
@@ -44,36 +32,18 @@ function RootContainer ({ peopleList, currentPeopleList }) {
 
   return (
     <>
-      {spinnerStatus ? <Spinner /> : <DragDropContext
-        onDragEnd={result => onDragEnd(result, favoritesList, setFavoritesList, currentPeopleList)}
-      >
+      {spinnerStatus ? <Spinner /> : <DndProvider backend={HTML5Backend}>
         <div className={'main_wrapper'}>
-          <Droppable droppableId="favorites">
-            {(provided, snapshot) => {
-              return (
-                <>
-                  <div className={'container_favorites'}>
-                    <h4>Add Favorites:</h4>
-                    <div  {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          className={"container_favorites-block"}>
-                      <TableContainer peopleList={favoritesList}
-                                      handleCharacter={() => {
-                                      }} />
-                    </div>
-                  </div>
-                  <div className={'container_pages'}>
-                    <Header />
-                    <Main />
-                    <Footer />
-                  </div>
-                </>
-
-              )
-            }}
-          </Droppable>
+          <>
+            <BoxTarget  />
+            <div className={'container_pages'}>
+              <Header />
+              <Main />
+              <Footer />
+            </div>
+          </>
         </div>
-      </DragDropContext>}
+      </DndProvider>}
     </>
   )
 }
@@ -81,14 +51,12 @@ function RootContainer ({ peopleList, currentPeopleList }) {
 function mapStateToProps (
   {
     peopleReducer: {
-      peopleList,
-      currentPeopleList
+      peopleList
     }
   }
 ) {
   return {
-    peopleList,
-    currentPeopleList
+    peopleList
   }
 }
 

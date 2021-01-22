@@ -1,16 +1,16 @@
 .container_favorites{
   width: 300px;
-  max-height: 600px;
+  min-height: 600px;
 }
 .main_wrapper{
   display: flex;
-  height: 100vh;
+  height: 60vh;
   justify-content: space-around;
 }
 .container_pages{
   width: 60%;
 }
 .container_favorites-block{
-  background-color: lightgrey;
   height: 100%;
+  overflow: auto;
 }

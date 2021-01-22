@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { TableContainer } from '../components/TableContainer/TableContainer'
 import InformationModal from '../components/InformationModal/InformationModal'
 import { connect, useDispatch } from 'react-redux'
-import { setPeopleBirthYear,setCurrentPeopleList } from '../store/people/action';
+import {
+  setPeopleBirthYear,
+  setCurrentPeopleList
+} from '../store/people/action'
+import { PersonItemWithDrag } from '../components/ListElement'
 
 export function Main ({
                         peopleList,
@@ -15,56 +19,61 @@ export function Main ({
                         rangeData,
                         currentPeopleList
                       }) {
-  const [modalState, setModalState] = useState(false);
-  const [person, setPerson] = useState(null);
-  const [personFilms, setPersonFilms] = useState([]);
-  const [personSpecies, setPersonSpecies] = useState([]);
-  const [personSpaceships, setPersonSpaceships] = useState([]);
-  const dispatch = useDispatch();
+  const [modalState, setModalState] = useState(false)
+  const [person, setPerson] = useState(null)
+  const [personFilms, setPersonFilms] = useState([])
+  const [personSpecies, setPersonSpecies] = useState([])
+  const [personSpaceships, setPersonSpaceships] = useState([])
+  const dispatch = useDispatch()
   const onFilter = (currentList) => {
     if (filterBySpecie.selected) {
-      currentList = currentList.filter(person => person[ 'species' ].includes(filterBySpecie.specieId));
+      currentList = currentList.filter(person => person[ 'species' ].includes(filterBySpecie.specieId))
     }
     if (filterByFilm.selected) {
-      currentList = currentList.filter(person => person[ 'films' ].includes(filterByFilm.filmId));
+      currentList = currentList.filter(person => person[ 'films' ].includes(filterByFilm.filmId))
     }
     return currentList.filter(person => (parseFloat(person.birth_year) >= rangeData.currentRange || person.birth_year === 'unknown'))
   }
 
   useEffect(() => {
     if (peopleList.length) {
-      const currentList = [...peopleList[ currentPage - 1 ]];
-      dispatch(setCurrentPeopleList(onFilter(currentList)));
+      const currentList = [...peopleList[ currentPage - 1 ]]
+      dispatch(setCurrentPeopleList(onFilter(currentList)))
     }
-  }, [rangeData, filterByFilm, filterBySpecie]);
+  }, [rangeData, filterByFilm, filterBySpecie])
 
   useEffect(() => {
     if (peopleList.length) {
       const correctBirthYears = [...peopleList[ currentPage - 1 ]]
-      .filter(p => !(p.birth_year.includes('unknown')))
-      .map(p => p.birth_year);
+        .filter(p => !(p.birth_year.includes('unknown')))
+        .map(p => p.birth_year)
       dispatch(setPeopleBirthYear(correctBirthYears))
     }
   }, [currentPage, peopleList])
 
   const handleCharacter = (item) => {
-    const userFilms = films.filter(film => film.characters.includes(item.url));
-    const userSpecies = species.filter(specie => item.species.includes(specie.url));
+    const userFilms = films.filter(film => film.characters.includes(item.url))
+    const userSpecies = species.filter(specie => item.species.includes(specie.url))
     const userSpaceships = spaceships.filter(spaceship => item.starships.includes(spaceship.url))
     setPersonSpaceships(userSpaceships)
-    setPersonSpecies(userSpecies);
+    setPersonSpecies(userSpecies)
     setPersonFilms(userFilms)
     setPerson(item)
-    setModalState(true);
+    setModalState(true)
   }
 
-  const handleClose = () => setModalState((prevState => !prevState));
+  const handleClose = () => setModalState((prevState => !prevState))
 
   return (
     <div>
       {currentPeopleList.length && <>
-        <TableContainer handleCharacter={handleCharacter}
-                        peopleList={currentPeopleList} />
+        <TableContainer>
+          {currentPeopleList.map((person, index) => {
+            return <PersonItemWithDrag key={person.url} index={index} item={person}
+                               handleCharacter={handleCharacter} />
+          })}
+
+        </TableContainer>
 
       </>}
 
@@ -80,7 +89,7 @@ export function Main ({
 }
 
 function mapStateToProps ({
-                            peopleReducer: { peopleList,currentPeopleList },
+                            peopleReducer: { peopleList, currentPeopleList },
                             filmsReducer: { films },
                             speciesReducer: { species },
                             spaceshipsReducer: { spaceships },
