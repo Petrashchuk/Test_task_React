@@ -9,9 +9,9 @@ import {
 } from '../store/filters/action'
 
 function Header ({ films, species, birthYears, rangeData }) {
-  const dispatch = useDispatch();
-  const maxYear = useMemo(() => birthYears.length ? Math.max(...birthYears.map(year => parseFloat(year))) : 0, [birthYears]);
-  const minYear = useMemo(() => birthYears.length ? Math.min(...birthYears.map(year => parseFloat(year))) : 0, [birthYears]);
+  const dispatch = useDispatch()
+  const maxYear = useMemo(() => birthYears.length ? Math.max(...birthYears.map(year => parseFloat(year))) : 0, [birthYears])
+  const minYear = useMemo(() => birthYears.length ? Math.min(...birthYears.map(year => parseFloat(year))) : 0, [birthYears])
 
   useEffect(() => {
     dispatch(setRangeYearData({
@@ -21,30 +21,30 @@ function Header ({ films, species, birthYears, rangeData }) {
     }))
   }, [birthYears])
 
-  const onSelectFilm = (event) => {
-    const filmId = event.target.value;
+  const onSelectFilm = useCallback((event) => {
+    const filmId = event.target.value
     if (filmId !== 'None') {
       dispatch(setFilterByFilm({ selected: true, filmId }))
     } else {
       dispatch(setFilterByFilm({ selected: false, filmId: 'None' }))
     }
-  }
+  }, [films])
 
   const onChange = useCallback((event) => {
-    const value = +event.target.value;
+    const value = +event.target.value
     dispatch(setRangeYearData({
       ...rangeData, currentRange: value
     }))
   }, [rangeData])
 
-  const onSelectSpecies = (event) => {
-    const specieId = event.target.value;
+  const onSelectSpecies = useCallback((event) => {
+    const specieId = event.target.value
     if (specieId !== 'None') {
       dispatch(setFilterBySpecie({ selected: true, specieId }))
     } else {
       dispatch(setFilterBySpecie({ selected: false, specieId: 'None' }))
     }
-  }
+  }, [species])
   return (
     <div className={'wrapper'}>
       <Select onChange={onSelectFilm}

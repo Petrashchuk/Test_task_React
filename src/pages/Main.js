@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { TableContainer } from '../components/TableContainer/TableContainer'
-import InformationModal from '../components/InformationModal/InformationModal'
+import React, { useCallback, useEffect, useState } from 'react'
+import { TableContainer } from '../components/TableContainer'
+import InformationModal from '../components/InformationModal'
 import { connect, useDispatch } from 'react-redux'
 import {
   setPeopleBirthYear,
   setCurrentPeopleList
 } from '../store/people/action'
 import { PersonItemWithDrag } from '../components/ListElement'
+
+
+
+
 
 export function Main ({
                         peopleList,
@@ -25,7 +29,8 @@ export function Main ({
   const [personSpecies, setPersonSpecies] = useState([])
   const [personSpaceships, setPersonSpaceships] = useState([])
   const dispatch = useDispatch()
-  const onFilter = (currentList) => {
+
+  const onFilter = useCallback((currentList) => {
     if (filterBySpecie.selected) {
       currentList = currentList.filter(person => person[ 'species' ].includes(filterBySpecie.specieId))
     }
@@ -33,7 +38,7 @@ export function Main ({
       currentList = currentList.filter(person => person[ 'films' ].includes(filterByFilm.filmId))
     }
     return currentList.filter(person => (parseFloat(person.birth_year) >= rangeData.currentRange || person.birth_year === 'unknown'))
-  }
+  },[])
 
   useEffect(() => {
     if (peopleList.length) {
@@ -51,7 +56,7 @@ export function Main ({
     }
   }, [currentPage, peopleList])
 
-  const handleCharacter = (item) => {
+  const handleCharacter = useCallback((item) => {
     const userFilms = films.filter(film => film.characters.includes(item.url))
     const userSpecies = species.filter(specie => item.species.includes(specie.url))
     const userSpaceships = spaceships.filter(spaceship => item.starships.includes(spaceship.url))
@@ -60,7 +65,7 @@ export function Main ({
     setPersonFilms(userFilms)
     setPerson(item)
     setModalState(true)
-  }
+  },[])
 
   const handleClose = () => setModalState((prevState => !prevState))
 
@@ -69,12 +74,12 @@ export function Main ({
       {currentPeopleList.length && <>
         <TableContainer>
           {currentPeopleList.map((person, index) => {
-            return <PersonItemWithDrag key={person.url} index={index} item={person}
-                               handleCharacter={handleCharacter} />
+            return <PersonItemWithDrag key={person.url}
+                                       index={index}
+                                       item={person}
+                                       handleCharacter={handleCharacter} />
           })}
-
         </TableContainer>
-
       </>}
 
       <InformationModal personSpaceships={personSpaceships}

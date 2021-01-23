@@ -1,6 +1,5 @@
 import React,{memo,useMemo} from 'react'
 import { Modal } from 'react-bootstrap'
-import './InformationModal.css';
 
 
 export default memo(function ({personFilms,person, open, handleClose,personSpecies,personSpaceships }) {

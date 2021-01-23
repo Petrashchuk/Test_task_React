@@ -1,6 +1,5 @@
 import React from 'react'
 import { Table } from 'react-bootstrap'
-import './TableContainer.css'
 
 
 export const TableContainer = ({children }) => {

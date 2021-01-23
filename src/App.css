@@ -14,3 +14,21 @@
   height: 100%;
   overflow: auto;
 }
+.modal-body p{
+  font-weight: bold;
+}
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+}
+
+.spinner_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.listRow{
+  cursor: pointer;
+}

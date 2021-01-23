@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { TableContainer } from './TableContainer/TableContainer'
+import { TableContainer } from './TableContainer'
 import { useDrop } from 'react-dnd'
 import { ItemTypes } from '../utils/Items'
 import { PersonItemNoDrag } from './ListElement'
