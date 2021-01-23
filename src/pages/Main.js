@@ -8,10 +8,6 @@ import {
 } from '../store/people/action'
 import { PersonItemWithDrag } from '../components/ListElement'
 
-
-
-
-
 export function Main ({
                         peopleList,
                         films,
@@ -30,7 +26,7 @@ export function Main ({
   const [personSpaceships, setPersonSpaceships] = useState([])
   const dispatch = useDispatch()
 
-  const onFilter = useCallback((currentList) => {
+  const onFilter = (currentList) => {
     if (filterBySpecie.selected) {
       currentList = currentList.filter(person => person[ 'species' ].includes(filterBySpecie.specieId))
     }
@@ -38,7 +34,7 @@ export function Main ({
       currentList = currentList.filter(person => person[ 'films' ].includes(filterByFilm.filmId))
     }
     return currentList.filter(person => (parseFloat(person.birth_year) >= rangeData.currentRange || person.birth_year === 'unknown'))
-  },[])
+  }
 
   useEffect(() => {
     if (peopleList.length) {
@@ -74,12 +70,12 @@ export function Main ({
       {currentPeopleList.length && <>
         <TableContainer>
           {currentPeopleList.map((person, index) => {
-            return <PersonItemWithDrag key={person.url}
-                                       index={index}
-                                       item={person}
-                                       handleCharacter={handleCharacter} />
+            return <PersonItemWithDrag key={person.url} index={index} item={person}
+                               handleCharacter={handleCharacter} />
           })}
+
         </TableContainer>
+
       </>}
 
       <InformationModal personSpaceships={personSpaceships}
