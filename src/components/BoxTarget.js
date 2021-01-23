@@ -41,7 +41,7 @@ export const BoxTarget = () => {
         >
           {favoritesList.map((person, index) => {
             return (
-              <PersonItemNoDrag item={person} index={index}
+              <PersonItemNoDrag key={person.url} item={person} index={index}
                                 removePerson={removePerson} />
             )
           })}
